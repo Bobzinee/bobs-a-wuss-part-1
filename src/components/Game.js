@@ -1,4 +1,4 @@
-import React, {useRef, useEffect} from "react";
+import React, {useRef, useEffect, memo} from "react";
 
 let canvasWidth;
 let canvasHeight;
@@ -18,7 +18,7 @@ class Character {
         this.context = context;
         this.showCollider = false;
         this.colliderColor = null;
-    }
+    };
 
     draw(){
         if(this.showCollider === true){
@@ -28,15 +28,15 @@ class Character {
                 this.context.current.strokeStyle = "yellow";
             }
             this.context.current.strokeRect(this.position.x, this.position.y, this.width, this.height);
-        }
+        };
 
         this.context.current.fillStyle = "red";
         this.context.current.fillRect(this.position.x, this.position.y, this.width, this.height);
-    }
+    };
 
     toggleCollider(value){
         this.showCollider = value;
-    }
+    };
 
     /**
      * 
@@ -46,37 +46,36 @@ class Character {
     toggleCollider(value, color){
         this.showCollider = value;
         this.colliderColor = color;
-    }
-
-}
+    };
+};
 
 class Bob extends Character {
     constructor(x, y, context){
         super(x, y, context);
         this.grounded = false;
-    }
+    };
 
     addGravity(weight){
         this.position.y = this.position.y - this.velocity.y;
 
         if(this.grounded === false){
             this.velocity.y = this.velocity.y - weight;
-        }
+        };
         
         //Stop falling when ground is reached
         if(this.position.y + this.height >= canvasHeight){
             this.velocity.y = 0;
             this.grounded = true;
-        }
-    }
+        };
+    };
 
     jump(){
         if(this.grounded === true){
             this.velocity.y = 12;
             this.grounded = false;
-        }
-    }
-}
+        };
+    };
+};
 
 class Zombie extends Character {
     constructor(x, y, context){
@@ -85,13 +84,13 @@ class Zombie extends Character {
         this.velocity = {
             x: -2,
             y: 0,
-        }
-    }
+        };
+    };
 
     move(){
         this.position.x = this.position.x + this.velocity.x;
-    }
-}
+    };
+};
 
 class Projectile {
     constructor(x ,y){
@@ -103,10 +102,10 @@ class Projectile {
             x : 0,
             y : 0,
         };
-    }
-}
+    };
+};
 
-export default function Game(){
+function Game(){
     const canvasRef = useRef(null);
     const contextRef = useRef(null);
 
@@ -145,8 +144,7 @@ export default function Game(){
         zombies.forEach(function(zombie, index){
             zombie.draw();
         });
-        
-    }
+    };
 
     function controller(){
         window.addEventListener("keydown", function(event){
@@ -154,7 +152,7 @@ export default function Game(){
                 char.jump();
             }
         });
-    }
+    };
 
     function update(){
         controller();
@@ -164,16 +162,18 @@ export default function Game(){
             zombie.move();
         });
         render();
-    }
+    };
 
     function animate(){
         update();
         animationId = requestAnimationFrame(animate);
-    }
+    };
 
     return(
         <>
-            <canvas ref={canvasRef} >I'm sorry but your computer is from the stone age. Please update</canvas>
+            <canvas className="game" ref={canvasRef} >I'm sorry but your computer is from the stone age. Please update</canvas>
         </>
     );
 }
+
+export default memo(Game);

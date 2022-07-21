@@ -46,6 +46,7 @@
 }
 
 .dialogContainer {
+  position: absolute;
   z-index: 3;
   width: 80vw;
   height: 20vh;
@@ -58,21 +59,35 @@
   border: 1px solid #7070707e;
   box-sizing: border-box;
   box-shadow: 2px 2px 8px rgba(80, 80, 80, 0.315);
+  transform: scale(0);
+}
+
+.dialogContainer img{
+  position: absolute;
+  right: 5px;
+  top: 5px;
+}
+
+.dialogContainer p {
+  text-align: justify;
+  padding: 0px 8%;
 }
 
 .dialogClose {
-  font-weight: bold;
+  font-weight: bolder;
   color: whitesmoke;
   background-color: #00F3D2;
   border: 1px solid rgba(83, 83, 83, 0.548);
   border-radius: 20px;
   padding: 8px 45px;
-  margin-top: 20px;
+  margin-top: 5px;
 }
 
 .settingsContainer {
+  transform: scale(0);
+  position: absolute;
   z-index: 3;
-  background-color: #3ac6feaf;
+  background-color: #3ac6fe;
   width: 80%;
   height: 50vh;
   border-radius: 28px;
@@ -176,9 +191,18 @@ input:checked + .slider:before {
 }
 
 .aboutContainer {
- color: #2B6B84;
- font-size: 1.6rem;
- padding: 5px 10px;
+  background-color: whitesmoke;
+  height: 100vh;
+  position: absolute;
+  z-index: 4;
+  color: #2B6B84;
+  font-size: 1.6rem;
+  padding: 0px 5%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: justify;
 }
 
 .aboutClose {
@@ -194,7 +218,8 @@ input:checked + .slider:before {
 }
 
 .conditionContainer {
-  z-index: 3;
+  position: absolute;
+  z-index: 4;
   background-image: linear-gradient(to right, #2196F3, #4dffe7);
   width: 80%;
   height: 50vh;
@@ -206,6 +231,7 @@ input:checked + .slider:before {
   justify-content: center;
   align-items: center;
   padding: 40px;
+  transform: scale(0);
 }
 
 .conditionContainer h2{
@@ -222,4 +248,137 @@ input:checked + .slider:before {
   text-shadow: 2px 2px 6px #3e3e3e59;
   border-radius: 10px;
   padding: 20px 30px;
+}
+
+.menuContainer{
+  background-color: whitesmoke;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-evenly;
+  align-items: center;
+}
+
+.menuBottomPanel{
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  position: relative;
+  top: 30px;
+}
+
+#menuTitle {
+  width: 85%;
+}
+
+#playBtn{
+  animation-name: playBtn;
+  animation-duration: 2s;
+  animation-timing-function: ease-in-out;
+  animation-iteration-count: infinite;
+  animation-direction: alternate;
+}
+
+@keyframes playBtn {
+  0%{
+    transform: scale(1);
+  }
+  100%{
+    transform: scale(1.2);
+  }
+}
+
+#computerBtn{
+ position: relative;
+ left: 30px;
+}
+
+#settingsBtn{
+  position: relative;
+  right: 30px;
+}
+
+.blur {
+  animation-name: blur-in;
+  animation-duration: 0.8s;
+  animation-timing-function: ease-in;
+  filter: blur(8px);
+}
+
+@keyframes blur-in {
+  0% {
+    filter: blur(0px);
+  }
+  100% {
+    filter: blur(8px);
+  }
+}
+
+.computerContainer {
+  z-index: 3;
+  position: absolute;
+  height: 100%;
+  background-color: #3E3E3E;
+  color: #D9D9D9;
+}
+
+.computerMidPanel{
+  display: flex;  
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+}
+
+.card {
+  background-color: #707070;
+  width: 65%;
+  height: 60vh;
+  border-radius: 50px;
+  position: relative;
+  top: 15vh;
+}
+
+.card h2 {
+  position: relative;
+  top: -24%;
+  font-size: 1.3rem;
+}
+
+.description {
+  position: relative;
+  top: -24%;
+  padding: 0px 5%;
+  text-align: justify;
+  font-size: 2vh;
+}
+
+#leftArrow {
+  position: relative;
+  top: 130px;
+  left: -20px;
+}
+
+#rightArrow {
+  position: relative;
+  top: 130px;
+  right: -20px;
+}
+
+#zombie {
+  position: relative;
+  top: -25%;
+  width: 100%;
+}
+
+#computerBackBtn {
+  position: absolute;
+  bottom: 3%;
+  left: 3%;
+}
+
+.game {
+  height: 100vh;
+  z-index: 2;
+  position: absolute;
 }

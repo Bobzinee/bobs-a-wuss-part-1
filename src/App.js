@@ -3,6 +3,7 @@ import './App.css';
 
 import Game from './components/Game';
 import Loading from './components/Loading';
+import Menu from './components/Menu';
 
 function App() {
   const [isLoaded, setIsLoaded] = useState(false);
@@ -16,7 +17,8 @@ function App() {
 
   return (
     <div className="App">
-      {isLoaded ? <Game /> : <Loading />}
+      <Menu />
+      {/* {isLoaded ? <Game /> : <Loading />} */}
     </div>
   );
 }
