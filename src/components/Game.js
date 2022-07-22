@@ -1,7 +1,10 @@
-import React, {useRef, useEffect, memo} from "react";
+import React, {useRef, useEffect, useState, memo} from "react";
+import gameOver from "./images/game_over.svg";
 
 let canvasWidth;
 let canvasHeight;
+let isPlaying = true;
+let scoreId;
 
 class Character {
     constructor(x, y, context){
@@ -105,17 +108,32 @@ class Projectile {
     };
 };
 
-function Game(){
+function getRandomNumber(min, max){
+    return Math.random() * (max - min) + min;
+};
+
+function Game({handleGameOver}){
     const canvasRef = useRef(null);
     const contextRef = useRef(null);
+    const [score, setScore] = useState(0);
+    const [gameover, setIsGameover] = useState(false);
 
     let animationId;
-    let score;
     let char;
-    let z;
 
     let zombies = [];
 
+    spawnEnemies();
+
+    function spawnEnemies(){
+        let timeout = getRandomNumber(800, 2800);
+        setTimeout(function(){
+            zombies.push(new Zombie(canvasWidth, canvasHeight - 30, contextRef));
+            if(isPlaying){
+                spawnEnemies();
+            }   
+        }, timeout);
+    };
 
     useEffect(function(){
         const canvas = canvasRef.current;
@@ -127,17 +145,14 @@ function Game(){
         canvasHeight = window.innerHeight;
 
         char = new Bob(50, canvasHeight - 30, contextRef);
-        z = new Zombie(canvasWidth, canvasHeight - 30, contextRef);
-        zombies.push(z);
-
+        isPlaying = true;
+      
         const context = canvas.getContext("2d");
         contextRef.current = context;
-        
-        animate();
-
-    }, [animate]);
     
-
+        animate();
+    }, []);
+    
     function render(){
         contextRef.current.clearRect(0, 0 ,canvasWidth, canvasHeight);
         char.draw();
@@ -147,31 +162,73 @@ function Game(){
     };
 
     function controller(){
-        window.addEventListener("keydown", function(event){
-            if(event.key === " "){
-                char.jump();
-            }
-        });
+            window.addEventListener("keydown", function(event){
+                if(event.key === " " && isPlaying){
+                    char.jump();
+                }
+            });
+
+            window.addEventListener("touchstart", function(){
+                if(isPlaying){
+                    char.jump();
+                }
+            })
     };
 
+    function updateScore(){
+        scoreId = setTimeout(function(){
+            if(isPlaying){
+                setScore(score + 1);
+            } else {
+                clearInterval(scoreId);
+            }
+        }, 500);
+    };
+    updateScore();
+
     function update(){
-        controller();
         char.addGravity(0.4);
         char.toggleCollider(true);
-        zombies.forEach(function(zombie){
-            zombie.move();
+        zombies.forEach(function(zombie, index){
+            //Collision detection
+            if(char.position.x + char.width >= zombie.position.x 
+                && char.position.x <= zombie.position.x + zombie.width
+                && char.position.y + char.height >= zombie.position.y
+                && char.position.y <= zombie.position.y + zombie.height
+                ){
+                    isPlaying = false;
+                    setIsGameover(true);
+                    window.navigator.vibrate(300);
+                    cancelAnimationFrame(animationId);
+                    return;
+                }
+            
+            if(isPlaying){
+                zombie.move();
+            }
+
+            //Clean up 
+            if(zombie.position.x + zombie.width < 0){
+                zombies.splice(index, 1);
+            }
         });
+       
+        controller();
         render();
     };
 
     function animate(){
-        update();
-        animationId = requestAnimationFrame(animate);
+        if(isPlaying){
+            update();
+            animationId = requestAnimationFrame(animate);
+        }
     };
 
     return(
         <>
             <canvas className="game" ref={canvasRef} >I'm sorry but your computer is from the stone age. Please update</canvas>
+            <h2 className="scoreBoard">Score: {score}</h2>
+            {gameover && <img className="gameOver" src={gameOver} alt="game over" onClick={handleGameOver}/>}
         </>
     );
 }

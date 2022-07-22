@@ -5,6 +5,7 @@
   justify-content: center;
   align-items: center;
   height: 100vh;
+  user-select: none;
 }
 
 .loadingContainer {
@@ -187,7 +188,8 @@ input:checked + .slider:before {
   box-shadow: 5px 5px 10px inset rgba(153, 153, 153, 0.541);
   font-weight: bold;
   position: relative;
-  top: 15px
+  top: 15px;
+  cursor: pointer;
 }
 
 .aboutContainer {
@@ -278,6 +280,7 @@ input:checked + .slider:before {
   animation-timing-function: ease-in-out;
   animation-iteration-count: infinite;
   animation-direction: alternate;
+  cursor: pointer;
 }
 
 @keyframes playBtn {
@@ -292,11 +295,13 @@ input:checked + .slider:before {
 #computerBtn{
  position: relative;
  left: 30px;
+ cursor: pointer;
 }
 
 #settingsBtn{
   position: relative;
   right: 30px;
+  cursor: pointer;
 }
 
 .blur {
@@ -375,10 +380,71 @@ input:checked + .slider:before {
   position: absolute;
   bottom: 3%;
   left: 3%;
+  cursor: pointer;
 }
 
 .game {
   height: 100vh;
   z-index: 2;
   position: absolute;
+}
+
+.scoreBoard{
+  position: absolute;
+  right: 14%;
+  top: 3%;
+}
+
+.gameOver {
+  position: absolute;
+  z-index: 4;
+  width: 90%;
+}
+
+@media screen and (min-width: 768px) {
+  .dialogContainer{
+      width: 25vw;
+      height: 30vh;
+  }
+
+  .settingsContainer{
+    height: 68vh;
+    width: 30vw;
+  }
+
+  .conditionContainer{
+    height: 68vh;
+    width: 30vw;
+  }
+
+  .card{
+    width: 30%;
+    height: 62vh;
+  }
+
+  .description{
+    padding: 0px 8%;
+  }
+
+  #rightArrow{
+    top: 100px;
+    right: -80px;
+    cursor: pointer;
+  }
+
+  #leftArrow{
+    top: 100px;
+    left: -80px;
+    cursor: pointer;
+  }
+
+  #computerBackBtn{
+    bottom: 6%;
+    left: 6%;
+    cursor: pointer;
+  }
+
+  .gameOver {
+    width: 25%;
+  }
 }

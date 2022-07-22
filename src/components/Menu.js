@@ -23,7 +23,7 @@ export default function Menu(){
 
     return(
         <>
-            {toggleBtn.playBtn ? <Game /> : 
+            {toggleBtn.playBtn ? <Game handleGameOver={handleGameOver}/> : 
                 <div className={ toggleBtn.settingsBtn ? "menuContainer blur" : "menuContainer"}>
                     <img id="menuTitle" src={title} alt="Bob's a wuss" />
                     <img id="playBtn" src={play} alt="Play" onClick={handleOnPlayClick}/>
@@ -75,4 +75,8 @@ export default function Menu(){
     function handleComputerClose(){
         setToggleBtn({settingsBtn: false});
     };
+
+    function handleGameOver(){
+        setToggleBtn({playBtn: false});
+    }
 };
