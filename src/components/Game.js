@@ -5,6 +5,8 @@ import gameOver from "./images/game_over.png";
 import cloud_1 from "./images/cloud_1.svg";
 import cloud_2 from "./images/cloud_2.svg";
 import zombieImg from './images/zombie.png';
+import bobImg from './images/bob.png';
+import shotgunImg from './images/shotgun.png';
 
 let canvasWidth;
 let canvasHeight;
@@ -14,9 +16,12 @@ let taps = 0;
 let speed = 1;
 let scoreId;
 let cloudId;
+let gunsId;
+let bullets = 0;
 const MAX_SNOW = 40;
 const MAX_FLY = 10;
 const MAX_CLOUDS = 3;
+const FRICTION = 0.98;
 const CLOUD = [cloud_1, cloud_2];
 
 
@@ -30,46 +35,22 @@ class Character {
             x: 0,
             y: -2,
         }
-        this.width = 30;
-        this.height = 30;
         this.context = context;
-        this.showCollider = false;
-        this.colliderColor = null;
     };
 
-    draw(){
-        if(this.showCollider === true){
-            if(this.colliderColor){
-                this.context.current.strokeStyle = this.colliderColor;
-            } else {
-                this.context.current.strokeStyle = "yellow";
-            }
-            this.context.current.strokeRect(this.position.x, this.position.y, this.width, this.height);
-        };
-
-        this.context.current.fillStyle = "red";
-        this.context.current.fillRect(this.position.x, this.position.y, this.width, this.height);
-    };
-
-    toggleCollider(value){
-        this.showCollider = value;
-    };
-
-    /**
-     * 
-     * @param {boolean} value - True or False value to show or hide collider box for debugging.
-     * @param {string} color - (Optional) Color of the collider box
-     */
-    toggleCollider(value, color){
-        this.showCollider = value;
-        this.colliderColor = color;
-    };
 };
 
 class Bob extends Character {
     constructor(x, y, context){
         super(x, y, context);
+        this.width = 60;
+        this.height = 98;
         this.grounded = false;
+        this.img = new Image();
+        this.gunImg = new Image();
+        this.equipped = false
+        this.img.src = bobImg;
+        this.gunImg.src = shotgunImg;
     };
 
     addGravity(weight){
@@ -86,9 +67,21 @@ class Bob extends Character {
         };
     };
 
+    draw(){
+        this.context.current.drawImage(this.img, this.position.x, this.position.y, 60, 98);
+
+        if(this.equipped){
+            this.context.current.drawImage(this.gunImg, this.position.x + 10, this.position.y + this.height / 2, 57, 31);
+        }
+
+        //Collider for debug...
+        //this.context.current.strokeStyle = "white";
+        //this.context.current.strokeRect(this.position.x, this.position.y, this.width, this.height);
+    }
+
     jump(){
         if(this.grounded === true){
-            this.velocity.y = 12;
+            this.velocity.y = 13;
             this.grounded = false;
         };
     };
@@ -99,17 +92,20 @@ class Zombie extends Character {
         super(x, y, context);
 
         this.velocity = {
-            x: -2,
+            x: -3,
             y: 0,
         };
         this.width = 70;
-        this.height = 70;
+        this.height = 100;
         this.img = new Image();
         this.img.src = zombieImg;
     };
 
     draw(){
-        this.context.current.drawImage(this.img, this.position.x, this.position.y - 70);
+        this.context.current.drawImage(this.img, this.position.x, this.position.y);
+
+        //Collider for debugging...
+        //this.context.current.strokeRect(this.position.x, this.position.y, this.width, this.height);
     }
 
     move(){
@@ -117,18 +113,94 @@ class Zombie extends Character {
     };
 };
 
+class Gun{
+    constructor(context){
+        this.position = {
+            x : canvasWidth,
+            y : canvasHeight - 300,
+        };
+        this.velocity = {
+            x: -3,
+            y: 0,
+        };
+        this.width = 47;
+        this.height = 21
+        this.img = new Image();
+        this.img.src = shotgunImg;
+        this.context = context;
+    };
+
+    draw(){
+        this.context.current.drawImage(this.img, this.position.x, this.position.y, 47, 21);
+    };
+
+    move(){
+        this.position.x = this.position.x + this.velocity.x * speed;
+    };
+};
+
 class Projectile {
-    constructor(x ,y){
+    constructor(x, y, context){
         this.position = {
             x,
             y,
         };
         this.velocity = {
-            x : 0,
-            y : 0,
+            x: 0, 
+            y: 0,
         };
+        this.size = 2;
+        this.context = context
     };
+
+    draw() {
+        this.context.current.beginPath();
+        this.context.current.fillStyle = 'red';
+        this.context.current.arc(this.position.x, this.position.y, this.size, 0, Math.PI * 2, false);
+        this.context.current.fill();
+    }
+
+    fire(){
+        this.velocity.x = 7;
+        this.position.x = this.position.x + this.velocity.x;
+    }
 };
+
+
+class Particle {
+    constructor(x, y, radius, color, context){
+        this.position = {
+            x,
+            y
+        }
+        this.velocity = {
+            x: (Math.random() - 0.5) * (Math.random() * 6), 
+            y: (Math.random() - 0.5) * (Math.random() * 6)
+        }
+        this.alpha = 1;
+        this.radius = radius;
+        this.color = color;
+        this.context = context;
+    }
+
+    draw(){
+        this.context.current.save();
+        this.context.current.globalAlpha = this.alpha;
+        this.context.current.beginPath();
+        this.context.current.arc(this.position.x, this.position.y, this.radius, 0, Math.PI * 2, false);
+        this.context.current.fillStyle = this.color;
+        this.context.current.fill();
+        this.context.current.restore();
+    };
+
+    move(){
+        this.velocity.x = this.velocity.x * FRICTION;
+        this.velocity.y = this.velocity.y * FRICTION;
+        this.position.x = this.position.x + this.velocity.x;
+        this.position.y = this.position.y + this.velocity.y;
+        this.alpha = this.alpha - 0.01;
+    };
+}
 
 class Cloud {
     constructor(context){
@@ -139,7 +211,7 @@ class Cloud {
         };
        
         this.velocity = {
-            x: -0.1,
+            x: getRandomNumber(-0.1, -0.3),
             y: 0,
         };
         this.img = new Image();
@@ -158,7 +230,7 @@ class Cloud {
 
 class SnowFlake {
     constructor(context) {
-        this.SNOW_XSPEED_RANGE = [-0.8, 0.8];
+        this.SNOW_XSPEED_RANGE = [-1, 0];
         this.SNOW_YSPEED_RANGE = [0.3, 0.5];
         this.SNOW_SIZE_RANGE = [1, 3];
         this.SNOW_LIFESPAN_RANGE = [75, 150];
@@ -256,6 +328,8 @@ function Game({handleGameOver}){
     const scoreBarRef = useRef(null);
     const [score, setScore] = useState(1);
     const [gameover, setIsGameover] = useState(false);
+    let bulletImg = new Image();
+    bulletImg.src = shotgunImg;
 
     let animationId;
     let char;
@@ -264,6 +338,9 @@ function Game({handleGameOver}){
     let snowFlakes = [];
     let fireflies = [];
     let clouds = [];
+    let particles = [];
+    let guns = [];
+    let projectiles = [];
 
     spawnEnemies();
 
@@ -279,10 +356,20 @@ function Game({handleGameOver}){
         };
     };
 
+    function createGuns(){
+        gunsId = setInterval(function(){
+            if(guns.length === 0 && isPlaying){
+                guns.push(new Gun(contextRef));
+            }
+        }, 8000);
+    };
+
+    createGuns();
+
     function spawnEnemies(){
         let timeout = getRandomNumber(500, 2800);
         setTimeout(function(){
-            zombies.push(new Zombie(canvasWidth, canvasHeight - 30, contextRef));
+            zombies.push(new Zombie(canvasWidth, canvasHeight - 100, contextRef));
             if(isPlaying){
                 spawnEnemies();
             }   
@@ -306,6 +393,14 @@ function Game({handleGameOver}){
             if(cld.position.x + 280 < 0){
                 clouds.splice(index, 1);
             };
+        });
+    };
+
+    function removeGuns(){
+        guns.forEach(function(gun, index){
+            if(gun.position.x < 0){
+                guns.splice(index, 1);
+            }
         });
     };
 
@@ -337,6 +432,7 @@ function Game({handleGameOver}){
         speed = speed + increasedSpeed;
     };
 
+
     useEffect(function(){
         const canvas = canvasRef.current;
         canvas.width = window.innerWidth;
@@ -346,13 +442,21 @@ function Game({handleGameOver}){
         canvasWidth = window.innerWidth;
         canvasHeight = window.innerHeight;
 
-        char = new Bob(50, canvasHeight - 30, contextRef);
+        char = new Bob(50, canvasHeight - 110, contextRef);
         isPlaying = true;
       
         const context = canvas.getContext("2d");
         contextRef.current = context;
+
+        if(char.equipped === false){
+            createGuns();
+        }
     
         animate();
+        
+            document.addEventListener("touchstart", (event) => {mobileController(event)});
+            document.addEventListener("keydown", (event) => {controller(event)});
+
     }, []);
     
     function render(){
@@ -363,6 +467,13 @@ function Game({handleGameOver}){
         contextRef.current.fillStyle = '#FCFF9B';
         contextRef.current.arc(canvasWidth - 30, 60, 180, 0, Math.PI * 2, false);
         contextRef.current.fill();
+
+        //Draw bullets
+        for(let i = 0; i < bullets; i = i + 2){
+            contextRef.current.drawImage(bulletImg, 10 + i * 20, 10);
+        }
+
+        char.draw();
 
         zombies.forEach(function(zombie, index){
             zombie.draw();
@@ -380,21 +491,53 @@ function Game({handleGameOver}){
             cld.draw();
         });
 
-        char.draw();
+        particles.forEach(function(particle, index){
+            particle.draw();
+        });
+
+        guns.forEach(function(gun, index){
+            gun.draw();
+        });
+
+        projectiles.forEach(function(projectile, index){
+            projectile.draw();
+        });
+
     };
 
-    function controller(){
-            window.addEventListener("keydown", function(event){
-                if(event.key === " " && isPlaying){
-                    char.jump();
-                }
-            });
+    function controller(event){
+                event.preventDefault();
 
-            window.addEventListener("touchstart", function(event){
-                if(isPlaying){
-                    char.jump();
+                if(event.key === " " && isPlaying){
+                    if(char.equipped === false){
+                        char.jump();
+                    } else {
+                        projectiles.push(new Projectile(char.position.x, char.position.y + 55, contextRef));
+                        bullets--;
+                        if(bullets < 1){
+                            char.equipped = false;
+                        }
+                    }
+                };
+
+                return () => {document.removeEventListener("keydown", (event) => {controller(event)});}
+    };
+
+    function mobileController(){
+        if(isPlaying){
+            if(char.equipped === false){
+                char.jump();
+            } else {
+                projectiles.push(new Projectile(char.position.x, char.position.y + 55, contextRef));
+                bullets--;
+                if(bullets <= 1){
+                    char.equipped = false;
                 }
-            });
+            }
+            
+        };
+
+        return () => {document.removeEventListener("touchstart", (event) => {mobileController(event)});}
     };
 
     //Definitely nothing suspicious going on over here...
@@ -429,7 +572,7 @@ function Game({handleGameOver}){
             if(isPlaying){
                     setScore(score + 1); 
                     if(score % 10 === 0){
-                        increaseSpeed(0.05);
+                        increaseSpeed(0.025);
                     };
             } else {
                 clearInterval(scoreId);
@@ -440,7 +583,6 @@ function Game({handleGameOver}){
 
     function update(){
         char.addGravity(0.4);
-        char.toggleCollider(true);
         zombies.forEach(function(zombie, index){
             //Collision detection
             if(!ghostMode){
@@ -453,12 +595,26 @@ function Game({handleGameOver}){
                         setIsGameover(true);
                         taps = 0;
                         speed = 1;
+                        bullets = 0;
                         window.navigator.vibrate(300);
                         clearInterval(cloudId);
+                        clearInterval(gunsId);
                         cancelAnimationFrame(animationId);
                         return;
                     }
             }
+
+            projectiles.forEach(function(projectile, projIndex){
+                if(projectile.position.x + projectile.size >= zombie.position.x){
+                    projectiles.splice(projIndex, 1);
+                    zombies.splice(index, 1);
+
+                    for(let i = 0; i < 40; i++){
+                        particles.push(new Particle(zombie.position.x + 20, zombie.position.y + 20, Math.random() * 3, 'red', contextRef));
+                    };
+
+                }
+            });
             
             if(isPlaying){
                 zombie.move();
@@ -470,11 +626,24 @@ function Game({handleGameOver}){
             }
         });
 
+        guns.forEach(function(gun, index){
+            if(char.position.x + char.width >+ gun.position.x
+                && char.position.x <= gun.position.x + gun.width
+                && char.position.y + char.height >= gun.position.y
+                &&char.position.y <= gun.position.y + gun.height){
+                    char.equipped = true;
+                    bullets = 6;
+                    guns.splice(index, 1);
+                }
+        });
+
         createSnow();
         removeSnow();
 
         createFlies();
         removeFlies();
+
+        removeGuns();
 
         removeClouds();
 
@@ -489,8 +658,24 @@ function Game({handleGameOver}){
         clouds.forEach(function(cld, index){
             cld.move();
         });
+
+        guns.forEach(function(gun, index){
+            gun.move();
+        });
+
+        projectiles.forEach(function(projectile, index){
+            projectile.fire();
+        });
+
+        particles.forEach(function(particle, index){
+            if(particle.alpha <= 0){
+                particles.splice(index, 1);
+            } else {
+                particle.move();
+            };
+        });
        
-        controller();
+        
         render();
     };
 
