@@ -390,6 +390,7 @@ input:checked + .slider:before {
 }
 
 .scoreBoard{
+  z-index: 3;
   position: absolute;
   right: 14%;
   top: 3%;
@@ -399,6 +400,16 @@ input:checked + .slider:before {
   position: absolute;
   z-index: 4;
   width: 90%;
+}
+
+.ghostModeBar{
+  background-color: #00F3D2;
+  z-index: 3;
+  height: 5px;
+  width: 50%;
+  position: absolute;
+  top: 20px;
+  margin: 0px auto;
 }
 
 @media screen and (min-width: 768px) {
@@ -446,5 +457,10 @@ input:checked + .slider:before {
 
   .gameOver {
     width: 25%;
+  }
+
+  .scoreBoard {
+    right: 6%;
+    color: #3E3E3E;
   }
 }
