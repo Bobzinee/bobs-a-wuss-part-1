@@ -6,6 +6,7 @@ import title from "./images/logo.png"
 import play from "./images/play_btn.svg";
 import computer from "./images/computer_btn.svg";
 import settings from "./images/settings_btn.svg";
+import select from './sounds/select.mp3';
 
 import Settings from "./Settings";
 import Computer from "./Computer";
@@ -20,6 +21,8 @@ export default function Menu(){
         settingsBtn: false,
         showFullScreen: false,
     });
+
+    let selectSound = new Audio(select);
 
     return(
         <>
@@ -42,13 +45,16 @@ export default function Menu(){
     function handleFullScreen(){
         document.getElementById("root").requestFullscreen();
         setToggleBtn({showFullScreen: true});
+        selectSound.play()
     }
 
     function handleDialogClose(){
         setToggleBtn({showFullScreen: true});
+        selectSound.play();
     }
 
     function handleSettingsBackPress(settingsRef){
+        selectSound.play();
         gsap.to(settingsRef.current, {
             scale: 0,
             duration: 0.3,
@@ -61,22 +67,27 @@ export default function Menu(){
     }
 
     function handleOnPlayClick(){
+        selectSound.play();
         setToggleBtn({playBtn: true});
     };
 
     function handleOnComputerClick(){
+        selectSound.play();
         setToggleBtn({computerBtn: true});
     };
 
     function handleOnSettingsClick(){
+        selectSound.play();
         setToggleBtn({settingsBtn: true});
     };
 
     function handleComputerClose(){
+        selectSound.play();
         setToggleBtn({settingsBtn: false});
     };
 
     function handleGameOver(){
+        selectSound.play();
         setToggleBtn({playBtn: false});
     }
 };

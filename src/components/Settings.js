@@ -3,6 +3,7 @@ import gsap from 'gsap';
 
 import backBtn from "./images/back_btn.svg";
 import aboutBtn from "./images/about_btn.svg";
+import select from "./sounds/select.mp3";
 
 import About from "./About";
 import TermsAndConditions from "./TermsAndConditions"; 
@@ -21,6 +22,9 @@ function ToggleSwitch(){
 }
 
 export default function Settings({handleBackPress}){
+
+    let selectSound = new Audio(select);
+
     const settingsRef = useRef(null);
 
     const [toggleBtn, setToggleBtn] = useState(
@@ -64,14 +68,17 @@ export default function Settings({handleBackPress}){
     );
 
     function handleAboutPress(){
+        selectSound.play();
         setToggleBtn({about: true, conditions: false})
     };
 
     function handleConditionsPress(){
+        selectSound.play();
         setToggleBtn({about: false, conditions: true});
     };
 
     function handleConditionsClose(conditionsRef){
+        selectSound.play();
         gsap.to(conditionsRef.current, {
             scale: 0,
             duration: 0.2,
@@ -84,6 +91,7 @@ export default function Settings({handleBackPress}){
     };
 
     function handleAboutClose(){
+        selectSound.play();
         setToggleBtn({...toggleBtn, about: false});
     };
 }

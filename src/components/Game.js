@@ -7,6 +7,15 @@ import cloud_2 from "./images/cloud_2.svg";
 import zombieImg from './images/zombie.png';
 import bobImg from './images/bob.png';
 import shotgunImg from './images/shotgun.png';
+import background1 from './images/background_1.png';
+import background2 from './images/background_2.png';
+import background3 from './images/background_3.png';
+import jump from './sounds/jump.wav';
+import fire from './sounds/fire.wav';
+import reload from './sounds/reload.wav';
+import eaten from './sounds/gameover.wav';
+import wind from './sounds/wind.mp3';
+import cheat from './sounds/cheat.mp3';
 
 let canvasWidth;
 let canvasHeight;
@@ -23,6 +32,13 @@ const MAX_FLY = 10;
 const MAX_CLOUDS = 3;
 const FRICTION = 0.98;
 const CLOUD = [cloud_1, cloud_2];
+
+let jumpSound = new Audio(jump);
+let fireSound = new Audio(fire);
+let reloadSound = new Audio(reload);
+let eatenSound = new Audio(eaten);
+let cheatSound = new Audio(cheat);
+let windSound = new Audio();
 
 
 class Character {
@@ -92,7 +108,7 @@ class Zombie extends Character {
         super(x, y, context);
 
         this.velocity = {
-            x: -3,
+            x: -4,
             y: 0,
         };
         this.width = 70;
@@ -112,6 +128,38 @@ class Zombie extends Character {
         this.position.x = this.position.x + this.velocity.x * speed;
     };
 };
+
+class Background {
+    constructor(img, speedModifier, context){
+        this.img = img;
+        this.context = context;
+        this.x = 0;
+        this.width = 1600;
+        this.height = 203;
+        this.x2 = this.width;
+        this.speedModifier = speedModifier;
+        this.speed = speed * this.speedModifier;
+        this.y = canvasHeight - this.height;
+    }
+
+    draw(){
+        this.context.current.drawImage(this.img, this.x, this.y, this.width, this.height);
+        this.context.current.drawImage(this.img, this.x2, this.y, this.width, this.height);
+    }
+
+    update(){
+        this.speed = speed * this.speedModifier;
+        if(this.x <= -this.width){
+            this.x = this.width + this.x2 - this.speed;
+        }
+        if(this.x2 <= -this.width){
+            this.x2 = this.width + this.x - this.speed;
+        }
+        this.x = Math.floor(this.x - this.speed);
+        this.x2 = Math.floor(this.x2 - this.speed);
+    }
+}
+
 
 class Gun{
     constructor(context){
@@ -284,7 +332,7 @@ class Firefly {
     constructor(context) {
         this.FLY_XSPEED_RANGE = [-0.3, 0.3];
         this.FLY_YSPEED_RANGE = [-0.3, 0.1];
-        this.FLY_SIZE_RANGE = [0.4, 1.5];
+        this.FLY_SIZE_RANGE = [0.6, 1.5];
         this.FLY_LIFESPAN_RANGE = [140, 440];
         
         this.context = context;
@@ -331,6 +379,16 @@ function Game({handleGameOver}){
     let bulletImg = new Image();
     bulletImg.src = shotgunImg;
 
+    let backgroundImg_1 = new Image();
+    let backgroundImg_2 = new Image();
+    let backgroundImg_3 = new Image();
+    backgroundImg_1.src = background1;
+    backgroundImg_2.src = background2;
+    backgroundImg_3.src = background3;
+
+    
+
+
     let animationId;
     let char;
 
@@ -341,6 +399,7 @@ function Game({handleGameOver}){
     let particles = [];
     let guns = [];
     let projectiles = [];
+    let backgrounds = [];
 
     spawnEnemies();
 
@@ -356,15 +415,14 @@ function Game({handleGameOver}){
         };
     };
 
-    function createGuns(){
-        gunsId = setInterval(function(){
-            if(guns.length === 0 && isPlaying){
-                guns.push(new Gun(contextRef));
-            }
-        }, 8000);
-    };
-
-    createGuns();
+        function createGuns(){
+            setTimeout(function(){
+                if(guns.length === 0 && isPlaying && char.equipped === false){
+                    guns.push(new Gun(contextRef));
+                };
+                createGuns();
+            }, getRandomNumber(10000, 12000));
+        }
 
     function spawnEnemies(){
         let timeout = getRandomNumber(500, 2800);
@@ -442,16 +500,30 @@ function Game({handleGameOver}){
         canvasWidth = window.innerWidth;
         canvasHeight = window.innerHeight;
 
+        windSound.src = wind;
+        windSound.play();
+        windSound.addEventListener("ended", function(){
+            this.currentTime = 0;
+            this.play();
+        });
+
         char = new Bob(50, canvasHeight - 110, contextRef);
         isPlaying = true;
       
         const context = canvas.getContext("2d");
         contextRef.current = context;
 
+        let layer1 = new Background(backgroundImg_1,  1, contextRef);
+        let layer2 = new Background(backgroundImg_2,  0.5, contextRef);
+        let layer3 = new Background(backgroundImg_3,  0.1, contextRef);
+
+        backgrounds.push(layer3);
+        backgrounds.push(layer2);
+        backgrounds.push(layer1);
+
         if(char.equipped === false){
             createGuns();
         }
-    
         animate();
         
             document.addEventListener("touchstart", (event) => {mobileController(event)});
@@ -462,6 +534,10 @@ function Game({handleGameOver}){
     function render(){
         contextRef.current.fillStyle = '#3E3E3E';
         contextRef.current.fillRect(0, 0, canvasWidth, canvasHeight);
+
+        backgrounds.forEach(function(background, index){
+            background.draw();
+        });
 
         //Draw moon
         contextRef.current.fillStyle = '#FCFF9B';
@@ -511,8 +587,10 @@ function Game({handleGameOver}){
                 if(event.key === " " && isPlaying){
                     if(char.equipped === false){
                         char.jump();
+                        jumpSound.play();
                     } else {
                         projectiles.push(new Projectile(char.position.x, char.position.y + 55, contextRef));
+                        fireSound.play();
                         bullets--;
                         if(bullets < 1){
                             char.equipped = false;
@@ -527,8 +605,10 @@ function Game({handleGameOver}){
         if(isPlaying){
             if(char.equipped === false){
                 char.jump();
+                jumpSound.play();
             } else {
                 projectiles.push(new Projectile(char.position.x, char.position.y + 55, contextRef));
+                fireSound.play();
                 bullets--;
                 if(bullets <= 1){
                     char.equipped = false;
@@ -545,6 +625,7 @@ function Game({handleGameOver}){
         if(taps < 5){
             taps++;
         } else {
+            cheatSound.play();
             ghostMode = true;
             taps = 0;
 
@@ -600,6 +681,9 @@ function Game({handleGameOver}){
                         clearInterval(cloudId);
                         clearInterval(gunsId);
                         cancelAnimationFrame(animationId);
+                        eatenSound.play();
+                        windSound.src = '';
+                        windSound.currentTime = 0;
                         return;
                     }
             }
@@ -634,6 +718,7 @@ function Game({handleGameOver}){
                     char.equipped = true;
                     bullets = 6;
                     guns.splice(index, 1);
+                    reloadSound.play();
                 }
         });
 
@@ -665,6 +750,10 @@ function Game({handleGameOver}){
 
         projectiles.forEach(function(projectile, index){
             projectile.fire();
+        });
+
+        backgrounds.forEach(function(background, index){
+            background.update();
         });
 
         particles.forEach(function(particle, index){

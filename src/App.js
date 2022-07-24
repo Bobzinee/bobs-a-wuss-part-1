@@ -1,7 +1,6 @@
 import React, {useState, useEffect}from 'react';
 import './App.css';
 
-import Game from './components/Game';
 import Loading from './components/Loading';
 import Menu from './components/Menu';
 
@@ -17,8 +16,7 @@ function App() {
 
   return (
     <div className="App">
-      <Menu />
-      {/* {isLoaded ? <Game /> : <Loading />} */}
+      {isLoaded ? <Menu /> : <Loading />}
     </div>
   );
 }
