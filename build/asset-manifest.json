@@ -1,0 +1,41 @@
+{
+  "files": {
+    "main.css": "/static/css/main.34cb94b5.css",
+    "main.js": "/static/js/main.8b88879b.js",
+    "static/js/787.6a541d2d.chunk.js": "/static/js/787.6a541d2d.chunk.js",
+    "static/media/wind.mp3": "/static/media/wind.40bf53404ce08a968ae9.mp3",
+    "static/media/Plain-old-vanilla-zombie.png": "/static/media/Plain-old-vanilla-zombie.bb23a135e3470dcffdfe.png",
+    "static/media/Hobo-zombie.png": "/static/media/Hobo-zombie.fb92b6e6cf72b388b1d0.png",
+    "static/media/Pizza-delivery-zombie.png": "/static/media/Pizza-delivery-zombie.6403708fd30faa1936ce.png",
+    "static/media/game_over.png": "/static/media/game_over.b37925c1186b86a978f9.png",
+    "static/media/fire.wav": "/static/media/fire.55add89aec57243d3d7e.wav",
+    "static/media/gameover.wav": "/static/media/gameover.1775d39c46d7351c90cf.wav",
+    "static/media/jump.wav": "/static/media/jump.e88a7e341591ca0c602a.wav",
+    "static/media/reload.wav": "/static/media/reload.d55473aaba5d3c4e6802.wav",
+    "static/media/background_3.png": "/static/media/background_3.dba25ab3826ef8832591.png",
+    "static/media/background_2.png": "/static/media/background_2.bbf0d39436769839d28c.png",
+    "static/media/background_1.png": "/static/media/background_1.9f5cee2f3d11f354c904.png",
+    "static/media/logo.png": "/static/media/logo.28338b81a1980dfa2776.png",
+    "static/media/back_btn.svg": "/static/media/back_btn.0ac76cc0d676fcb6318a6f55d5a918f4.svg",
+    "static/media/back_btn_computer.svg": "/static/media/back_btn_computer.dbab6b2ea7b1c95a313c72e713c70710.svg",
+    "static/media/cheat.mp3": "/static/media/cheat.47a86cd8e1dfb0e2b732.mp3",
+    "static/media/play_btn.svg": "/static/media/play_btn.1d3c26360ec85269acde83a88a8104bb.svg",
+    "static/media/select.mp3": "/static/media/select.4db67aa08a84ff4711bb.mp3",
+    "static/media/settings_btn.svg": "/static/media/settings_btn.43c1c047196af0b790063e236645f947.svg",
+    "static/media/computer_btn.svg": "/static/media/computer_btn.f6eb8d03d75530f06ffb76d21b13151e.svg",
+    "static/media/about_btn.svg": "/static/media/about_btn.eac35bc3bbd74679ba006eaf25190ba7.svg",
+    "static/media/close_btn.svg": "/static/media/close_btn.b82e24b54152ffad47c447dc403c6e41.svg",
+    "index.html": "/index.html",
+    "static/media/cloud_1.svg": "/static/media/cloud_1.c7c9ab8be33a0e62f504fbe13932d616.svg",
+    "static/media/cloud_2.svg": "/static/media/cloud_2.40f9067f423c3c7b93594c78455d0efa.svg",
+    "static/media/right_arrow_btn.svg": "/static/media/right_arrow_btn.a3c24a5c5be1e6477dd0a66ea3d44390.svg",
+    "static/media/left_arrow_btn.svg": "/static/media/left_arrow_btn.c6ebd6e0c5282858d40971213788f0ec.svg",
+    "main.34cb94b5.css.map": "/static/css/main.34cb94b5.css.map",
+    "main.8b88879b.js.map": "/static/js/main.8b88879b.js.map",
+    "787.6a541d2d.chunk.js.map": "/static/js/787.6a541d2d.chunk.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.34cb94b5.css",
+    "static/js/main.8b88879b.js"
+  ]
+}

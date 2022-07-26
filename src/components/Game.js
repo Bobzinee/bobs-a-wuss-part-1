@@ -622,7 +622,7 @@ function Game({handleGameOver}){
 
     //Definitely nothing suspicious going on over here...
     function handleScoreClick() {
-        if(taps < 5){
+        if(taps < 2){
             taps++;
         } else {
             cheatSound.play();

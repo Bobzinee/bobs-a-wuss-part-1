@@ -13,8 +13,7 @@ export default function About({handleClose}){
                 world. In my free time, I love
                 writing comedy, designing 
                 games, sketching and 
-                spending time with my furry
-                little friend - <span style={{fontWeight: "bold"}}>Randy</span>.
+                spending time with my dog - <span style={{fontWeight: "bold"}}>Randy</span>.
             </p>
             <button className="aboutClose" onClick={handleClose}>CLOSE</button>
         </div>
