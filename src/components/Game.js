@@ -425,7 +425,7 @@ function Game({handleGameOver}){
         }
 
     function spawnEnemies(){
-        let timeout = getRandomNumber(500, 2800);
+        let timeout = getRandomNumber(1000, 2800);
         setTimeout(function(){
             zombies.push(new Zombie(canvasWidth, canvasHeight - 100, contextRef));
             if(isPlaying){
