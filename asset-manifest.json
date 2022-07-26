@@ -1,7 +1,7 @@
 {
   "files": {
     "main.css": "/bobs-a-wuss-part-1/static/css/main.34cb94b5.css",
-    "main.js": "/bobs-a-wuss-part-1/static/js/main.2ccbbc9b.js",
+    "main.js": "/bobs-a-wuss-part-1/static/js/main.be305cfa.js",
     "static/js/787.6a541d2d.chunk.js": "/bobs-a-wuss-part-1/static/js/787.6a541d2d.chunk.js",
     "static/media/wind.mp3": "/bobs-a-wuss-part-1/static/media/wind.40bf53404ce08a968ae9.mp3",
     "static/media/Plain-old-vanilla-zombie.png": "/bobs-a-wuss-part-1/static/media/Plain-old-vanilla-zombie.bb23a135e3470dcffdfe.png",
@@ -31,11 +31,11 @@
     "static/media/right_arrow_btn.svg": "/bobs-a-wuss-part-1/static/media/right_arrow_btn.a3c24a5c5be1e6477dd0a66ea3d44390.svg",
     "static/media/left_arrow_btn.svg": "/bobs-a-wuss-part-1/static/media/left_arrow_btn.c6ebd6e0c5282858d40971213788f0ec.svg",
     "main.34cb94b5.css.map": "/bobs-a-wuss-part-1/static/css/main.34cb94b5.css.map",
-    "main.2ccbbc9b.js.map": "/bobs-a-wuss-part-1/static/js/main.2ccbbc9b.js.map",
+    "main.be305cfa.js.map": "/bobs-a-wuss-part-1/static/js/main.be305cfa.js.map",
     "787.6a541d2d.chunk.js.map": "/bobs-a-wuss-part-1/static/js/787.6a541d2d.chunk.js.map"
   },
   "entrypoints": [
     "static/css/main.34cb94b5.css",
-    "static/js/main.2ccbbc9b.js"
+    "static/js/main.be305cfa.js"
   ]
 }
